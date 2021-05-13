@@ -1,6 +1,5 @@
 package edu.co.icesi.ecos14;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -15,13 +14,14 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+import edu.co.icesi.ecos14.model.Contact;
 
+public class MainActivity extends AppCompatActivity {
 
     FirebaseDatabase db;
     private ListView contactList;
-    private ArrayList<Contact> contacts;
-    private ArrayAdapter<Contact> adapter;
+    private ContactAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +29,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         contactList = findViewById(R.id.contactList);
-        contacts = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this,
-                                            android.R.layout.simple_list_item_1,
-                                            contacts);
+
+        adapter = new ContactAdapter();
         contactList.setAdapter(adapter);
 
 
@@ -43,17 +41,18 @@ public class MainActivity extends AppCompatActivity {
         loadContacts();
     }
 
+    //Este método carga la información de firebase y arma los elementos visual para pasarlos al ListView
     public void loadContacts(){
         db.getReference().child("contactos").addValueEventListener(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot data) {
+
+                        adapter.clear();
                         for(DataSnapshot child : data.getChildren()){
                             Contact contact = child.getValue(Contact.class);
-                            Log.e(">>>",contact.getNombre());
-                            contacts.add(contact);
+                            adapter.addContact(contact);
                         }
-                        adapter.notifyDataSetChanged();
                     }
 
                     @Override

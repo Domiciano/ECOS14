@@ -1,4 +1,4 @@
-package edu.co.icesi.ecos14;
+package edu.co.icesi.ecos14.model;
 
 import androidx.annotation.NonNull;
 
